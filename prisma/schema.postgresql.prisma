@@ -37,6 +37,7 @@ model Lead {
   meetings         Meeting[]
   milestones       Milestone[]
   activities       ActivityLog[]
+  attachments      Attachment[]
 }
 
 model Meeting {
@@ -88,3 +89,15 @@ model Setting {
   value     String
   updatedAt DateTime @updatedAt
 }
+
+model Attachment {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  fileName  String
+  fileType  String
+  fileSize  Int
+  fileData  String
+  createdAt DateTime @default(now())
+}
+

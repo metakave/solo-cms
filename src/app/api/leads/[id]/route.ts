@@ -19,6 +19,9 @@ export async function GET(
         activities: {
           orderBy: { createdAt: 'desc' },
         },
+        attachments: {
+          orderBy: { createdAt: 'desc' },
+        },
       },
     });
 

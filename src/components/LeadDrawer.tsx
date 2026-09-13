@@ -24,9 +24,19 @@ import {
   Pencil,
   Save,
   AlertTriangle,
+  Paperclip,
+  FileText,
+  UploadCloud,
+  Eye,
+  Download,
+  FileType,
+  File,
+  AlertCircle,
+  Loader2,
 } from 'lucide-react';
-import { Lead, Stage, Milestone, Meeting, ActivityLog, ServiceType, Priority } from '@/types/crm';
+import { Lead, Stage, Milestone, Meeting, ActivityLog, ServiceType, Priority, Attachment } from '@/types/crm';
 import { generateWhatsAppLink, getDefaultFollowUpTemplate } from '@/lib/whatsapp';
+import { DocumentPreviewModal } from '@/components/DocumentPreviewModal';
 
 interface LeadDrawerProps {
   lead: Lead | null;
@@ -45,12 +55,18 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
   onOpenScheduleMeeting,
   onEditLead,
 }) => {
-  const [activeTab, setActiveTab] = useState<'EDIT' | 'AI' | 'WHATSAPP' | 'MILESTONES' | 'MEETINGS' | 'NOTES'>('AI');
+  const [activeTab, setActiveTab] = useState<'EDIT' | 'AI' | 'ATTACHMENTS' | 'WHATSAPP' | 'MILESTONES' | 'MEETINGS' | 'NOTES'>('AI');
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [whatsAppMsg, setWhatsAppMsg] = useState('');
   const [whatsAppGoal, setWhatsAppGoal] = useState('');
   const [whatsAppTone, setWhatsAppTone] = useState<'FRIENDLY_PROFESSIONAL' | 'DIRECT' | 'FORMAL'>('FRIENDLY_PROFESSIONAL');
   const [isDraftingMsg, setIsDraftingMsg] = useState(false);
+
+  // Attachment & Document Preview State
+  const [previewAttachment, setPreviewAttachment] = useState<Attachment | null>(null);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [isUploadingAttachment, setIsUploadingAttachment] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   
   // Full Inline Edit Lead State
   const [editName, setEditName] = useState('');
@@ -287,6 +303,95 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
     }
   };
 
+  // File Upload Handler
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !lead) return;
+    const file = files[0];
+    if (file.size > 15 * 1024 * 1024) {
+      setUploadError('File size exceeds 15 MB limit.');
+      return;
+    }
+
+    setIsUploadingAttachment(true);
+    setUploadError(null);
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const base64Data = reader.result as string;
+        const res = await fetch('/api/attachments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            leadId: lead.id,
+            fileName: file.name,
+            fileType: file.type || 'application/octet-stream',
+            fileSize: file.size,
+            fileData: base64Data,
+          }),
+        });
+
+        const data = await res.json();
+        if (data.success && data.attachment) {
+          const updatedLead: Lead = {
+            ...lead,
+            attachments: [data.attachment, ...(lead.attachments || [])],
+          };
+          onUpdateLead(updatedLead);
+        } else {
+          setUploadError(data.error || 'Failed to upload attachment');
+        }
+      } catch (err: any) {
+        setUploadError(err.message || 'Upload error');
+      } finally {
+        setIsUploadingAttachment(false);
+        e.target.value = '';
+      }
+    };
+    reader.onerror = () => {
+      setIsUploadingAttachment(false);
+      setUploadError('Failed to read file from disk.');
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Delete Attachment Handler
+  const handleDeleteAttachment = async (attachmentId: string) => {
+    if (!lead) return;
+    try {
+      const res = await fetch(`/api/attachments?id=${attachmentId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        const updatedLead: Lead = {
+          ...lead,
+          attachments: (lead.attachments || []).filter((a) => a.id !== attachmentId),
+        };
+        onUpdateLead(updatedLead);
+      }
+    } catch (err) {
+      console.error('Failed to delete attachment:', err);
+    }
+  };
+
+  // Download Attachment Handler
+  const handleDownloadAttachment = (attachment: Attachment) => {
+    const a = document.createElement('a');
+    a.href = attachment.fileData;
+    a.download = attachment.fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  // Open Preview Modal
+  const handleOpenPreview = (attachment: Attachment) => {
+    setPreviewAttachment(attachment);
+    setIsPreviewModalOpen(true);
+  };
+
   return (
     <div className="fixed inset-0 z-50 overflow-hidden bg-slate-950/60 dark:bg-slate-950/80 backdrop-blur-xs flex justify-end transition-opacity">
       <div className="w-full max-w-2xl bg-white dark:bg-[#0e1626] border-l border-slate-200 dark:border-slate-800 h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
@@ -338,7 +443,8 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
               </button>
               <button
                 onClick={onClose}
-                className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all"
+                className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                title="Close Drawer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -383,6 +489,15 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
             </button>
             <button
               type="button"
+              id="drawer-quick-files-btn"
+              onClick={() => setActiveTab('ATTACHMENTS')}
+              className="flex items-center gap-1.5 py-2 px-3 bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/40 rounded-xl text-xs font-semibold transition-all"
+            >
+              <Paperclip className="w-3.5 h-3.5" />
+              <span>Files ({lead.attachments?.length || 0})</span>
+            </button>
+            <button
+              type="button"
               onClick={() => setActiveTab('WHATSAPP')}
               className="flex items-center gap-1.5 py-2 px-3 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 rounded-xl text-xs font-semibold transition-all"
             >
@@ -405,6 +520,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
           {[
             { id: 'EDIT', label: 'Edit Deal', icon: Pencil },
             { id: 'AI', label: 'DeepSeek AI', icon: Sparkles },
+            { id: 'ATTACHMENTS', label: 'Attachments', icon: Paperclip, count: lead.attachments?.length },
             { id: 'WHATSAPP', label: '1-Click WhatsApp', icon: MessageCircle },
             { id: 'MILESTONES', label: 'Milestones & Cash', icon: DollarSign },
             { id: 'MEETINGS', label: 'Meetings & Zoho', icon: Calendar },
@@ -424,6 +540,11 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
               >
                 <tab.icon className="w-3.5 h-3.5" />
                 <span>{tab.label}</span>
+                {tab.count !== undefined && tab.count > 0 && (
+                  <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-bold">
+                    {tab.count}
+                  </span>
+                )}
               </button>
             );
           })}
@@ -749,6 +870,151 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                 <div className="bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-xs text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line font-mono">
                   {lead.aiDossier || 'No strategic dossier generated yet. Click "Re-Score" to generate full client dossier.'}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: ATTACHMENTS & DOCUMENT PREVIEW */}
+          {activeTab === 'ATTACHMENTS' && (
+            <div className="space-y-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                    <Paperclip className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                    <span>Lead Attachments & Documents</span>
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Proposals, scopes, contracts, and specifications with instant in-app preview for PDF and Word docs.
+                  </p>
+                </div>
+                <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                  {lead.attachments?.length || 0} files
+                </span>
+              </div>
+
+              {/* Upload Dropzone */}
+              <div className="border-2 border-dashed border-slate-300 dark:border-slate-700/80 hover:border-indigo-500 dark:hover:border-indigo-400 rounded-2xl p-6 text-center bg-slate-50/50 dark:bg-slate-900/40 transition-colors relative group">
+                <input
+                  type="file"
+                  id="lead-file-upload-input"
+                  onChange={handleFileUpload}
+                  accept=".pdf,.doc,.docx,.png,.jpg,.jpeg,.webp,.txt,.csv"
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                  disabled={isUploadingAttachment}
+                />
+                <div className="flex flex-col items-center justify-center pointer-events-none">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform border border-indigo-200 dark:border-indigo-500/20">
+                    {isUploadingAttachment ? (
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                    ) : (
+                      <UploadCloud className="w-6 h-6" />
+                    )}
+                  </div>
+                  <div className="font-bold text-xs text-slate-800 dark:text-slate-200">
+                    {isUploadingAttachment ? 'Uploading document...' : 'Click to browse or drop file here'}
+                  </div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                    Supports PDF, Word (.docx, .doc), text, and images up to 15 MB
+                  </div>
+                </div>
+              </div>
+
+              {uploadError && (
+                <div className="p-3 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 rounded-xl text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{uploadError}</span>
+                </div>
+              )}
+
+              {/* Attachments List */}
+              <div className="space-y-3">
+                {(!lead.attachments || lead.attachments.length === 0) ? (
+                  <div className="border border-dashed border-slate-300 dark:border-slate-800 rounded-2xl p-8 text-center text-xs text-slate-400 dark:text-slate-500 italic bg-white dark:bg-slate-900/20">
+                    No documents attached yet. Attach a client proposal, technical scope, or invoice to preview here.
+                  </div>
+                ) : (
+                  lead.attachments.map((att) => {
+                    const ext = att.fileName.split('.').pop()?.toLowerCase() || '';
+                    const isPdf = ext === 'pdf' || att.fileType.includes('pdf');
+                    const isDoc = ['doc', 'docx'].includes(ext) || att.fileType.includes('word');
+                    const sizeStr =
+                      att.fileSize >= 1024 * 1024
+                        ? `${(att.fileSize / (1024 * 1024)).toFixed(1)} MB`
+                        : `${Math.round(att.fileSize / 1024)} KB`;
+
+                    return (
+                      <div
+                        key={att.id}
+                        className="bg-white dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800/80 hover:border-indigo-300 dark:hover:border-slate-700 rounded-2xl p-4 shadow-xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div
+                            className={`p-2.5 rounded-xl border shrink-0 ${
+                              isPdf
+                                ? 'bg-rose-50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400'
+                                : isDoc
+                                ? 'bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20 text-blue-600 dark:text-blue-400'
+                                : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'
+                            }`}
+                          >
+                            {isPdf ? (
+                              <FileText className="w-5 h-5" />
+                            ) : isDoc ? (
+                              <FileType className="w-5 h-5" />
+                            ) : (
+                              <File className="w-5 h-5" />
+                            )}
+                          </div>
+
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-xs text-slate-900 dark:text-slate-100 truncate">
+                                {att.fileName}
+                              </span>
+                              <span className="text-[10px] uppercase font-bold px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                                {ext || 'FILE'}
+                              </span>
+                            </div>
+                            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                              {sizeStr} • Added {new Date(att.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center gap-1.5 self-end sm:self-center shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => handleOpenPreview(att)}
+                            className="flex items-center gap-1 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/15 hover:bg-indigo-100 dark:hover:bg-indigo-500/25 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30 rounded-xl text-xs font-semibold transition-all shadow-xs"
+                            title="Quick Preview in CRM"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>Quick Preview</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleDownloadAttachment(att)}
+                            className="p-1.5 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                            title="Download file"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteAttachment(att.id)}
+                            className="p-1.5 text-slate-400 hover:text-rose-600 dark:text-slate-500 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
+                            title="Delete attachment"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </div>
           )}
@@ -1098,6 +1364,16 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
           )}
         </div>
       </div>
+
+      {/* Quick Document & Proposal Previewer */}
+      <DocumentPreviewModal
+        attachment={previewAttachment}
+        isOpen={isPreviewModalOpen}
+        onClose={() => {
+          setIsPreviewModalOpen(false);
+          setPreviewAttachment(null);
+        }}
+      />
     </div>
   );
 };

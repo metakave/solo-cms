@@ -52,6 +52,16 @@ export interface ActivityLog {
   createdAt: string;
 }
 
+export interface Attachment {
+  id: string;
+  leadId: string;
+  fileName: string;
+  fileType: string;
+  fileSize: number;
+  fileData: string;
+  createdAt: string;
+}
+
 export interface Lead {
   id: string;
   name: string;
@@ -78,6 +88,7 @@ export interface Lead {
   milestones?: Milestone[];
   meetings?: Meeting[];
   activities?: ActivityLog[];
+  attachments?: Attachment[];
 }
 
 export interface RevenueMetrics {

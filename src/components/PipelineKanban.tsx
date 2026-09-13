@@ -19,6 +19,7 @@ import {
   Pencil,
   Eye,
   SlidersHorizontal,
+  Paperclip,
 } from 'lucide-react';
 import { Lead, Stage, Priority, ServiceType } from '@/types/crm';
 import { generateWhatsAppLink, getDefaultFollowUpTemplate } from '@/lib/whatsapp';
@@ -367,8 +368,19 @@ export const PipelineKanban: React.FC<PipelineKanbanProps> = ({
                         <div className="font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
                           ৳{lead.dealValue.toLocaleString()}
                         </div>
-                        <div className="text-slate-500 dark:text-slate-400 font-medium text-[11px]">
-                          {lead.probability}% prob
+                        <div className="flex items-center gap-2">
+                          {lead.attachments && lead.attachments.length > 0 && (
+                            <div
+                              className="flex items-center gap-0.5 text-[11px] text-indigo-600 dark:text-indigo-400 font-semibold bg-indigo-50 dark:bg-indigo-950/40 px-1.5 py-0.5 rounded-md border border-indigo-200 dark:border-indigo-800/40"
+                              title={`${lead.attachments.length} attachment${lead.attachments.length > 1 ? 's' : ''}`}
+                            >
+                              <Paperclip className="w-3 h-3" />
+                              <span>{lead.attachments.length}</span>
+                            </div>
+                          )}
+                          <span className="text-slate-500 dark:text-slate-400 font-medium text-[11px]">
+                            {lead.probability}% prob
+                          </span>
                         </div>
                       </div>
 

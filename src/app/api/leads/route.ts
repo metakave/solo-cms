@@ -40,6 +40,9 @@ export async function GET(req: NextRequest) {
           orderBy: { createdAt: 'desc' },
           take: 5,
         },
+        attachments: {
+          orderBy: { createdAt: 'desc' },
+        },
       },
       orderBy: [{ priority: 'asc' }, { updatedAt: 'desc' }],
     });
