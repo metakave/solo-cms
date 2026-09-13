@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X, Calendar, Clock, Video, Plus, User } from 'lucide-react';
 import { Lead } from '@/types/crm';
+import { DateInput } from '@/components/DateInput';
 
 interface ScheduleMeetingModalProps {
   isOpen: boolean;
@@ -125,14 +126,13 @@ export const ScheduleMeetingModal: React.FC<ScheduleMeetingModalProps> = ({
           {/* Date & Time */}
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Date *</label>
-              <input
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Date (DD/MM/YYYY) *</label>
+              <DateInput
                 id="meeting-date-input"
-                type="date"
                 value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                onChange={(val) => setDate(val)}
                 required
+                placeholder="DD/MM/YYYY"
               />
             </div>
             <div>

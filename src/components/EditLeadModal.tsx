@@ -21,6 +21,7 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 import { Lead, ServiceType, Stage, Priority } from '@/types/crm';
+import { DateInput } from '@/components/DateInput';
 
 interface EditLeadModalProps {
   isOpen: boolean;
@@ -332,12 +333,14 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
           {/* Next Follow-Up Date & Goal */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Next Follow-Up Date</label>
-              <input
-                type="date"
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Next Follow-Up Date (DD/MM/YYYY)
+              </label>
+              <DateInput
+                id="edit-lead-date-input"
                 value={nextFollowUpDate}
-                onChange={(e) => setNextFollowUpDate(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                onChange={(val) => setNextFollowUpDate(val)}
+                placeholder="DD/MM/YYYY"
               />
             </div>
 
