@@ -319,9 +319,11 @@ export const LeadListView: React.FC<LeadListViewProps> = ({
                             </span>
                           )}
                         </div>
-                        {lead.title && (
-                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
-                            {lead.title}
+                        {(lead.poc || lead.title) && (
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium flex items-center gap-1.5 flex-wrap">
+                            {lead.poc && <span className="font-bold text-indigo-600 dark:text-indigo-400">PoC: {lead.poc}</span>}
+                            {lead.poc && lead.title && <span>•</span>}
+                            {lead.title && <span>{lead.title}</span>}
                           </div>
                         )}
                       </td>

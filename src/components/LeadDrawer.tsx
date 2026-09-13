@@ -72,6 +72,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
   
   // Full Inline Edit Lead State
   const [editName, setEditName] = useState('');
+  const [editPoc, setEditPoc] = useState('');
   const [editTitle, setEditTitle] = useState('');
   const [editCompany, setEditCompany] = useState('');
   const [editEmail, setEditEmail] = useState('');
@@ -101,6 +102,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
     if (lead) {
       setShowDrawerDeleteWarning(false);
       setEditName(lead.name || '');
+      setEditPoc(lead.poc || '');
       setEditTitle(lead.title || '');
       setEditCompany(lead.company || '');
       setEditEmail(lead.email || '');
@@ -119,7 +121,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
       setEditTags(lead.tags || '');
       setLeadNotes(lead.notes || '');
       setWhatsAppGoal(lead.nextFollowUpGoal || 'Review project timeline and milestone schedule');
-      setWhatsAppMsg(getDefaultFollowUpTemplate(lead.name, lead.serviceType));
+      setWhatsAppMsg(getDefaultFollowUpTemplate(lead.poc || lead.name, lead.serviceType));
     }
   }, [lead]);
 
@@ -135,6 +137,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: editName.trim(),
+          poc: editPoc.trim() || null,
           title: editTitle.trim() || null,
           company: editCompany.trim() || null,
           email: editEmail.trim() || null,
@@ -418,13 +421,13 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                 </span>
               </div>
               <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{lead.name}</h2>
-              {(lead.company || lead.title) && (
-                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5 font-medium">
-                  {lead.company && <span className="font-semibold text-slate-700 dark:text-slate-300">{lead.company}</span>}
-                  {lead.company && lead.title && <span>•</span>}
-                  {lead.title && <span>{lead.title}</span>}
-                </div>
-              )}
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5 font-medium flex-wrap">
+                {lead.poc && <span className="font-bold text-indigo-600 dark:text-indigo-400">PoC: {lead.poc}</span>}
+                {lead.poc && (lead.company || lead.title) && <span>•</span>}
+                {lead.company && <span className="font-semibold text-slate-700 dark:text-slate-300">{lead.company}</span>}
+                {lead.company && lead.title && <span>•</span>}
+                {lead.title && <span>{lead.title}</span>}
+              </div>
             </div>
 
             <div className="flex items-center gap-2">
@@ -601,7 +604,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                 </div>
               </div>
 
-              {/* Lead Name & Job Title */}
+              {/* Lead Name & Lead PoC */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
@@ -612,26 +615,38 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    placeholder="e.g. Rahim Chowdhury or Apex Implementation"
+                    placeholder="e.g. Apex Odoo 18 Migration"
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-semibold"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Role / Job Title</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Lead PoC (Point of Contact)</label>
                   <input
+                    id="drawer-edit-poc-input"
                     type="text"
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    placeholder="e.g. Managing Director"
+                    value={editPoc}
+                    onChange={(e) => setEditPoc(e.target.value)}
+                    placeholder="e.g. Rahim Chowdhury"
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
               </div>
 
-              {/* Company & Deal Value */}
+              {/* Role / Job Title & Company */}
               <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">PoC Role / Job Title</label>
+                  <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    placeholder="e.g. Managing Director / IT Head"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+
                 <div>
                   <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Company / Organization</label>
                   <input
@@ -643,7 +658,10 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
                   />
                 </div>
+              </div>
 
+              {/* Deal Value & Stage */}
+              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Deal Value (BDT)</label>
                   <input

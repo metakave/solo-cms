@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const {
       name,
+      poc,
       title,
       company,
       email,
@@ -91,6 +92,7 @@ export async function POST(req: NextRequest) {
     const lead = await prisma.lead.create({
       data: {
         name,
+        poc,
         title,
         company,
         email,

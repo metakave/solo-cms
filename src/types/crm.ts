@@ -65,6 +65,7 @@ export interface Attachment {
 export interface Lead {
   id: string;
   name: string;
+  poc?: string | null;
   title?: string | null;
   company?: string | null;
   email?: string | null;

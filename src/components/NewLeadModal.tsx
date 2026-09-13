@@ -28,6 +28,7 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
   onLeadCreated,
 }) => {
   const [name, setName] = useState('');
+  const [poc, setPoc] = useState('');
   const [title, setTitle] = useState('');
   const [company, setCompany] = useState('');
   const [email, setEmail] = useState('');
@@ -52,6 +53,7 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: name.trim(),
+          poc: poc.trim() || undefined,
           title: title.trim() || undefined,
           company: company.trim() || undefined,
           email: email.trim() || undefined,
@@ -69,6 +71,7 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
         onLeadCreated(data.lead);
         onClose();
         setName('');
+        setPoc('');
         setTitle('');
         setCompany('');
         setEmail('');
@@ -136,7 +139,7 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
             </div>
           </div>
 
-          {/* Contact Name & Title */}
+          {/* Lead Name & Lead PoC */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
@@ -147,25 +150,26 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Rahim Chowdhury or Apex Implementation"
+                placeholder="e.g. Apex Odoo 18 Migration"
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-semibold"
                 required
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Role / Job Title</label>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Lead PoC (Point of Contact)</label>
               <input
+                id="new-lead-poc-input"
                 type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Managing Director"
+                value={poc}
+                onChange={(e) => setPoc(e.target.value)}
+                placeholder="e.g. Rahim Chowdhury"
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>
           </div>
 
-          {/* Company & Deal Value */}
+          {/* Company & Role */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Company / Organization</label>
@@ -180,6 +184,20 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
             </div>
 
             <div>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">PoC Role / Job Title</label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Managing Director / IT Head"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+          </div>
+
+          {/* Deal Value & Phone */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
               <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Deal Value (BDT)</label>
               <input
                 id="new-lead-value-input"
@@ -187,13 +205,10 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
                 value={dealValue}
                 onChange={(e) => setDealValue(e.target.value)}
                 placeholder="e.g. 150000"
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-semibold text-emerald-600 dark:text-emerald-400"
               />
             </div>
-          </div>
 
-          {/* Phone (WhatsApp) & Email */}
-          <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 WhatsApp / Phone (with Country Code)
@@ -207,7 +222,10 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>
+          </div>
 
+          {/* Email & Initial Stage */}
+          <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
               <input
@@ -218,16 +236,13 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>
-          </div>
 
-          {/* Stage & Tags */}
-          <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Initial Stage</label>
               <select
                 value={stage}
                 onChange={(e) => setStage(e.target.value as Stage)}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-medium"
               >
                 <option value="NEW_INQUIRY">New Inquiry</option>
                 <option value="DISCOVERY_CALL">Discovery & Demo</option>
@@ -236,17 +251,18 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
                 <option value="WON_ACTIVE">Won & Active</option>
               </select>
             </div>
+          </div>
 
-            <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Tags (Comma-separated)</label>
-              <input
-                type="text"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
-                placeholder="Odoo 18, Accounting, MRP"
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
-              />
-            </div>
+          {/* Tags */}
+          <div>
+            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Tags (Comma-separated)</label>
+            <input
+              type="text"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              placeholder="Odoo 18, Accounting, MRP"
+              className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+            />
           </div>
 
           {/* Notes */}

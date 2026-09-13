@@ -129,8 +129,9 @@ export const FollowUpQueueView: React.FC<FollowUpQueueViewProps> = ({
                     >
                       {lead.name}
                     </h3>
-                    <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                      {lead.company && <span className="font-semibold text-slate-700 dark:text-slate-300">{lead.company} • </span>}
+                    <div className="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5 flex-wrap">
+                      {lead.poc && <span className="font-bold text-indigo-600 dark:text-indigo-400">PoC: {lead.poc} •</span>}
+                      {lead.company && <span className="font-semibold text-slate-700 dark:text-slate-300">{lead.company} •</span>}
                       <span>৳{lead.dealValue.toLocaleString()} ({lead.stage.replace('_', ' ')})</span>
                     </div>
                   </div>

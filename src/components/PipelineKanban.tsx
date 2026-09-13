@@ -381,13 +381,15 @@ export const PipelineKanban: React.FC<PipelineKanbanProps> = ({
                         )}
                       </div>
 
-                      {/* Lead Name (Prominent & Largest) & Company */}
+                      {/* Lead Name (Prominent & Largest) & Company / PoC */}
                       <div>
                         <div className="font-extrabold text-sm text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors line-clamp-1">
                           {lead.name}
                         </div>
-                        {(lead.company || lead.title) && (
-                          <div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-medium flex items-center gap-1.5">
+                        {(lead.poc || lead.company || lead.title) && (
+                          <div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-medium flex items-center gap-1.5 flex-wrap">
+                            {lead.poc && <span className="font-bold text-indigo-600 dark:text-indigo-400">PoC: {lead.poc}</span>}
+                            {lead.poc && (lead.company || lead.title) && <span>•</span>}
                             {lead.company && <span className="text-slate-700 dark:text-slate-300 font-semibold">{lead.company}</span>}
                             {lead.company && lead.title && <span>•</span>}
                             {lead.title && <span>{lead.title}</span>}

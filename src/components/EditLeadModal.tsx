@@ -49,6 +49,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
   onDeleteLead,
 }) => {
   const [name, setName] = useState('');
+  const [poc, setPoc] = useState('');
   const [title, setTitle] = useState('');
   const [company, setCompany] = useState('');
   const [email, setEmail] = useState('');
@@ -70,6 +71,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
     if (lead) {
       setShowDeleteWarning(false);
       setName(lead.name || '');
+      setPoc(lead.poc || '');
       setTitle(lead.title || '');
       setCompany(lead.company || '');
       setEmail(lead.email || '');
@@ -103,6 +105,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: name.trim(),
+          poc: poc.trim() || null,
           title: title.trim() || null,
           company: company.trim() || null,
           email: email.trim() || null,
@@ -202,7 +205,7 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
             </div>
           </div>
 
-          {/* Lead Name & Job Title */}
+          {/* Lead Name & Lead PoC */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
@@ -213,19 +216,46 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Rahim Chowdhury or Apex Implementation"
+                placeholder="e.g. Apex Odoo 18 Migration"
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-semibold"
                 required
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Role / Job Title</label>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Lead PoC (Point of Contact)</label>
+              <input
+                id="edit-lead-poc-input"
+                type="text"
+                value={poc}
+                onChange={(e) => setPoc(e.target.value)}
+                placeholder="e.g. Rahim Chowdhury"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+          </div>
+
+          {/* Role / Job Title & Company */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">PoC Role / Job Title</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g. Managing Director"
+                placeholder="e.g. Managing Director / IT Head"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Company / Organization</label>
+              <input
+                id="edit-lead-company-input"
+                type="text"
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder="e.g. Apex Apparel Ltd"
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>

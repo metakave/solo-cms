@@ -10,6 +10,7 @@ datasource db {
 model Lead {
   id               String        @id @default(cuid())
   name             String
+  poc              String?       // Point of Contact Person (Lead PoC)
   title            String?
   company          String?
   email            String?
