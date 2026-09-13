@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && (prisma db push --skip-generate || true) && next build",
+    "build": "export DATABASE_URL=\"${SOLOCRM_PRISMA_DATABASE_URL:-${SOLOCRM_DATABASE_URL:-$DATABASE_URL}}\" && prisma generate && (prisma db push --skip-generate || true) && next build",
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
