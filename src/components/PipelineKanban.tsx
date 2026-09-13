@@ -391,20 +391,36 @@ export const PipelineKanban: React.FC<PipelineKanbanProps> = ({
                         className="mt-3 pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-700/40 text-xs"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {/* 1-Click WhatsApp */}
-                        {lead.phone ? (
-                          <button
-                            id={`whatsapp-btn-${lead.id}`}
-                            onClick={() => onOpenWhatsApp(lead)}
-                            className="flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800/40 px-2.5 py-1 rounded-lg transition-all"
-                            title="Open WhatsApp chat"
-                          >
-                            <MessageCircle className="w-3 h-3" />
-                            <span>WhatsApp</span>
-                          </button>
-                        ) : (
-                          <span className="text-[10px] text-slate-400 dark:text-slate-500 italic">No phone</span>
-                        )}
+                        <div className="flex items-center gap-1.5">
+                          {/* 1-Click WhatsApp */}
+                          {lead.phone ? (
+                            <button
+                              id={`whatsapp-btn-${lead.id}`}
+                              onClick={() => onOpenWhatsApp(lead)}
+                              className="flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 border border-emerald-200 dark:border-emerald-800/40 px-2 py-1 rounded-lg transition-all"
+                              title="Open WhatsApp chat"
+                            >
+                              <MessageCircle className="w-3 h-3" />
+                              <span>WhatsApp</span>
+                            </button>
+                          ) : (
+                            <span className="text-[10px] text-slate-400 dark:text-slate-500 italic">No phone</span>
+                          )}
+
+                          {/* Direct Edit Button */}
+                          {onEditLead && (
+                            <button
+                              id={`edit-card-btn-${lead.id}`}
+                              type="button"
+                              onClick={() => onEditLead(lead)}
+                              className="flex items-center gap-1 text-[11px] font-semibold text-indigo-700 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 border border-indigo-200 dark:border-indigo-800/40 px-2 py-1 rounded-lg transition-all"
+                              title="Edit lead details"
+                            >
+                              <Pencil className="w-3 h-3" />
+                              <span>Edit</span>
+                            </button>
+                          )}
+                        </div>
 
                         {/* Quick Move Stage Dropdown */}
                         <select

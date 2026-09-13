@@ -22,8 +22,9 @@ import {
   History,
   Trash2,
   Pencil,
+  Save,
 } from 'lucide-react';
-import { Lead, Stage, Milestone, Meeting, ActivityLog } from '@/types/crm';
+import { Lead, Stage, Milestone, Meeting, ActivityLog, ServiceType, Priority } from '@/types/crm';
 import { generateWhatsAppLink, getDefaultFollowUpTemplate } from '@/lib/whatsapp';
 
 interface LeadDrawerProps {
@@ -43,13 +44,30 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
   onOpenScheduleMeeting,
   onEditLead,
 }) => {
-  const [activeTab, setActiveTab] = useState<'AI' | 'WHATSAPP' | 'MILESTONES' | 'MEETINGS' | 'NOTES'>('AI');
+  const [activeTab, setActiveTab] = useState<'EDIT' | 'AI' | 'WHATSAPP' | 'MILESTONES' | 'MEETINGS' | 'NOTES'>('AI');
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [whatsAppMsg, setWhatsAppMsg] = useState('');
   const [whatsAppGoal, setWhatsAppGoal] = useState('');
   const [whatsAppTone, setWhatsAppTone] = useState<'FRIENDLY_PROFESSIONAL' | 'DIRECT' | 'FORMAL'>('FRIENDLY_PROFESSIONAL');
   const [isDraftingMsg, setIsDraftingMsg] = useState(false);
   
+  // Full Inline Edit Lead State
+  const [editName, setEditName] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editCompany, setEditCompany] = useState('');
+  const [editEmail, setEditEmail] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editServiceType, setEditServiceType] = useState<ServiceType>('ODOO_CONSULTING');
+  const [editStage, setEditStage] = useState<Stage>('NEW_INQUIRY');
+  const [editDealValue, setEditDealValue] = useState('');
+  const [editProbability, setEditProbability] = useState('30');
+  const [editPriority, setEditPriority] = useState<Priority>('MEDIUM');
+  const [editNextFollowUpDate, setEditNextFollowUpDate] = useState('');
+  const [editNextFollowUpGoal, setEditNextFollowUpGoal] = useState('');
+  const [editTags, setEditTags] = useState('');
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [editSuccessMsg, setEditSuccessMsg] = useState(false);
+
   // New Milestone Form State
   const [newMilestoneTitle, setNewMilestoneTitle] = useState('');
   const [newMilestoneAmount, setNewMilestoneAmount] = useState('');
@@ -61,11 +79,69 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
 
   useEffect(() => {
     if (lead) {
+      setEditName(lead.name || '');
+      setEditTitle(lead.title || '');
+      setEditCompany(lead.company || '');
+      setEditEmail(lead.email || '');
+      setEditPhone(lead.phone || '');
+      setEditServiceType(lead.serviceType || 'ODOO_CONSULTING');
+      setEditStage(lead.stage || 'NEW_INQUIRY');
+      setEditDealValue(String(lead.dealValue ?? 0));
+      setEditProbability(String(lead.probability ?? 30));
+      setEditPriority(lead.priority || 'MEDIUM');
+      setEditNextFollowUpDate(
+        lead.nextFollowUpDate
+          ? new Date(lead.nextFollowUpDate).toISOString().split('T')[0]
+          : ''
+      );
+      setEditNextFollowUpGoal(lead.nextFollowUpGoal || '');
+      setEditTags(lead.tags || '');
       setLeadNotes(lead.notes || '');
       setWhatsAppGoal(lead.nextFollowUpGoal || 'Review project timeline and milestone schedule');
       setWhatsAppMsg(getDefaultFollowUpTemplate(lead.name, lead.serviceType));
     }
   }, [lead]);
+
+  // Save Full Lead Edit
+  const handleSaveFullLead = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!lead || !editName.trim()) return;
+
+    setIsSavingEdit(true);
+    try {
+      const res = await fetch(`/api/leads/${lead.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: editName.trim(),
+          title: editTitle.trim() || null,
+          company: editCompany.trim() || null,
+          email: editEmail.trim() || null,
+          phone: editPhone.trim() || null,
+          serviceType: editServiceType,
+          stage: editStage,
+          dealValue: Number(editDealValue) || 0,
+          probability: Math.min(100, Math.max(0, Number(editProbability) || 0)),
+          priority: editPriority,
+          nextFollowUpDate: editNextFollowUpDate ? new Date(editNextFollowUpDate).toISOString() : null,
+          nextFollowUpGoal: editNextFollowUpGoal.trim() || null,
+          notes: leadNotes.trim() || null,
+          tags: editTags.trim() || null,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.lead) {
+        onUpdateLead(data.lead);
+        setEditSuccessMsg(true);
+        setTimeout(() => setEditSuccessMsg(false), 2500);
+      }
+    } catch (err) {
+      console.error('Failed to save lead:', err);
+    } finally {
+      setIsSavingEdit(false);
+    }
+  };
 
   if (!lead) return null;
 
@@ -287,11 +363,44 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
               </div>
             </div>
           </div>
+
+          {/* Prominent Quick Actions Strip */}
+          <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-200 dark:border-slate-800/60">
+            <button
+              id="drawer-quick-edit-btn"
+              type="button"
+              onClick={() => {
+                if (onEditLead) onEditLead(lead);
+                else setActiveTab('EDIT');
+              }}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-600/20 active:scale-98 transition-all"
+            >
+              <Pencil className="w-3.5 h-3.5" />
+              <span>Edit Lead Details</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('WHATSAPP')}
+              className="flex items-center gap-1.5 py-2 px-3 bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/40 rounded-xl text-xs font-semibold transition-all"
+            >
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span>WhatsApp</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => onOpenScheduleMeeting(lead)}
+              className="flex items-center gap-1.5 py-2 px-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold transition-all"
+            >
+              <Calendar className="w-3.5 h-3.5" />
+              <span>Schedule</span>
+            </button>
+          </div>
         </div>
 
         {/* Drawer Tabs */}
         <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 px-6 gap-2 text-xs overflow-x-auto">
           {[
+            { id: 'EDIT', label: 'Edit Deal', icon: Pencil },
             { id: 'AI', label: 'DeepSeek AI', icon: Sparkles },
             { id: 'WHATSAPP', label: '1-Click WhatsApp', icon: MessageCircle },
             { id: 'MILESTONES', label: 'Milestones & Cash', icon: DollarSign },
@@ -319,6 +428,230 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
 
         {/* Drawer Body */}
         <div className="p-6 flex-1 overflow-y-auto space-y-6">
+          {/* TAB 0: EDIT LEAD FORM */}
+          {activeTab === 'EDIT' && (
+            <form onSubmit={handleSaveFullLead} className="space-y-4 text-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-slate-800">
+                <div className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <Pencil className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <span>Edit Lead Information</span>
+                </div>
+                {editSuccessMsg && (
+                  <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-lg border border-emerald-200 dark:border-emerald-800/40 animate-in fade-in">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    <span>Saved Successfully!</span>
+                  </span>
+                )}
+              </div>
+
+              {/* Service Stream Selector */}
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  Service Stream
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'ODOO_CONSULTING', label: 'Odoo Consulting', icon: Briefcase },
+                    { id: 'TRAINING', label: 'Training Batch', icon: Layers },
+                    { id: 'ADVISORY', label: 'Advisory Retainer', icon: Sparkles },
+                  ].map((svc) => (
+                    <button
+                      key={svc.id}
+                      type="button"
+                      onClick={() => setEditServiceType(svc.id as ServiceType)}
+                      className={`p-2 rounded-xl border text-center font-semibold transition-all flex flex-col items-center gap-1 ${
+                        editServiceType === svc.id
+                          ? 'bg-indigo-50 dark:bg-indigo-600/20 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-500 shadow-xs'
+                          : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:text-slate-900 dark:hover:text-slate-200'
+                      }`}
+                    >
+                      <svc.icon className="w-3.5 h-3.5" />
+                      <span className="text-[11px]">{svc.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Contact Person & Job Title */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Contact Person <span className="text-rose-500">*</span>
+                  </label>
+                  <input
+                    id="drawer-edit-name-input"
+                    type="text"
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    placeholder="Contact name"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Role / Job Title</label>
+                  <input
+                    type="text"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    placeholder="e.g. Managing Director"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+              </div>
+
+              {/* Company & Deal Value */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Company / Organization</label>
+                  <input
+                    id="drawer-edit-company-input"
+                    type="text"
+                    value={editCompany}
+                    onChange={(e) => setEditCompany(e.target.value)}
+                    placeholder="Company name"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Deal Value ($ USD)</label>
+                  <input
+                    id="drawer-edit-value-input"
+                    type="number"
+                    value={editDealValue}
+                    onChange={(e) => setEditDealValue(e.target.value)}
+                    placeholder="e.g. 15000"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-semibold text-emerald-600 dark:text-emerald-400"
+                  />
+                </div>
+              </div>
+
+              {/* Phone & Email */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    WhatsApp / Phone
+                  </label>
+                  <input
+                    id="drawer-edit-phone-input"
+                    type="text"
+                    value={editPhone}
+                    onChange={(e) => setEditPhone(e.target.value)}
+                    placeholder="+8801700000000"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                    placeholder="client@domain.com"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+              </div>
+
+              {/* Stage, Probability, Priority */}
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Pipeline Stage</label>
+                  <select
+                    value={editStage}
+                    onChange={(e) => setEditStage(e.target.value as Stage)}
+                    className="w-full px-2.5 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-medium"
+                  >
+                    <option value="NEW_INQUIRY">New Inquiry</option>
+                    <option value="DISCOVERY_CALL">Discovery & Demo</option>
+                    <option value="PROPOSAL_SENT">Proposal & Scope</option>
+                    <option value="NEGOTIATION">Negotiation & Terms</option>
+                    <option value="WON_ACTIVE">Won & Active Delivery</option>
+                    <option value="COMPLETED">Delivered / Completed</option>
+                    <option value="LOST">Lost</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Probability (%)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={editProbability}
+                    onChange={(e) => setEditProbability(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Priority</label>
+                  <select
+                    value={editPriority}
+                    onChange={(e) => setEditPriority(e.target.value as Priority)}
+                    className="w-full px-2.5 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-medium"
+                  >
+                    <option value="HIGH">High Priority</option>
+                    <option value="MEDIUM">Medium Priority</option>
+                    <option value="LOW">Low Priority</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Next Follow-up Date & Goal */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Next Follow-Up Date</label>
+                  <input
+                    type="date"
+                    value={editNextFollowUpDate}
+                    onChange={(e) => setEditNextFollowUpDate(e.target.value)}
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Next Follow-Up Goal</label>
+                  <input
+                    type="text"
+                    value={editNextFollowUpGoal}
+                    onChange={(e) => setEditNextFollowUpGoal(e.target.value)}
+                    placeholder="e.g. Agreement signoff"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                  />
+                </div>
+              </div>
+
+              {/* Tags */}
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Tags (Comma-separated)</label>
+                <input
+                  type="text"
+                  value={editTags}
+                  onChange={(e) => setEditTags(e.target.value)}
+                  placeholder="Odoo 18, Accounting, MRP"
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                />
+              </div>
+
+              {/* Save Button */}
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+                <button
+                  id="drawer-save-full-lead-btn"
+                  type="submit"
+                  disabled={isSavingEdit}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white font-bold rounded-xl shadow-md transition-all active:scale-95 text-xs"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{isSavingEdit ? 'Saving Changes...' : 'Save Lead Details'}</span>
+                </button>
+              </div>
+            </form>
+          )}
+
           {/* TAB 1: AI INTELLIGENCE & DOSSIER */}
           {activeTab === 'AI' && (
             <div className="space-y-5">
