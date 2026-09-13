@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { Lead, Stage, Priority, ServiceType } from '@/types/crm';
 import { generateWhatsAppLink, getDefaultFollowUpTemplate } from '@/lib/whatsapp';
+import { formatDate } from '@/lib/date';
 
 interface PipelineKanbanProps {
   leads: Lead[];
@@ -386,17 +387,13 @@ export const PipelineKanban: React.FC<PipelineKanbanProps> = ({
 
                       {/* Follow-up Indicator */}
                       {lead.nextFollowUpDate && (
-                        <div className="mt-2.5 flex items-start gap-1.5 text-[11px] text-amber-800 dark:text-amber-300/90 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-lg px-2 py-1">
-                          <Clock className="w-3 h-3 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
-                          <span className="line-clamp-1">
-                            {new Date(lead.nextFollowUpDate).toLocaleDateString([], {
-                              month: 'short',
-                              day: 'numeric',
-                            })}
-                            : {lead.nextFollowUpGoal || 'Follow-up'}
-                          </span>
-                        </div>
-                      )}
+                         <div className="mt-2.5 flex items-start gap-1.5 text-[11px] text-amber-800 dark:text-amber-300/90 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/30 rounded-lg px-2 py-1">
+                           <Clock className="w-3 h-3 mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                           <span className="line-clamp-1">
+                             {formatDate(lead.nextFollowUpDate)}: {lead.nextFollowUpGoal || 'Follow-up'}
+                           </span>
+                         </div>
+                       )}
 
                       {/* Quick Action Footer */}
                       <div

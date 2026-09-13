@@ -14,6 +14,7 @@ import {
   AlertCircle,
 } from 'lucide-react';
 import { Lead } from '@/types/crm';
+import { formatDate, formatTime } from '@/lib/date';
 
 interface MeetingPlannerViewProps {
   leads: Lead[];
@@ -171,16 +172,7 @@ export const MeetingPlannerView: React.FC<MeetingPlannerViewProps> = ({
                     <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
                       <Clock className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                       <span>
-                        {new Date(evt.startTime).toLocaleDateString([], {
-                          weekday: 'short',
-                          month: 'short',
-                          day: 'numeric',
-                        })}{' '}
-                        •{' '}
-                        {new Date(evt.startTime).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                        {formatDate(evt.startTime)} • {formatTime(evt.startTime)}
                       </span>
                     </div>
 

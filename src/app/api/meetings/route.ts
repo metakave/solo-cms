@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { formatDateTime } from '@/lib/date';
 
 export async function GET(req: NextRequest) {
   try {
@@ -72,7 +73,7 @@ export async function POST(req: NextRequest) {
         data: {
           leadId,
           type: 'NOTE',
-          content: `Meeting scheduled: "${title}" on ${new Date(startTime).toLocaleString()}`,
+          content: `Meeting scheduled: "${title}" on ${formatDateTime(startTime)}`,
         },
       });
     }

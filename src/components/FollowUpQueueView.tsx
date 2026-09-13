@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Lead } from '@/types/crm';
 import { generateWhatsAppLink, getDefaultFollowUpTemplate } from '@/lib/whatsapp';
+import { formatDate } from '@/lib/date';
 
 interface FollowUpQueueViewProps {
   leads: Lead[];
@@ -136,12 +137,7 @@ export const FollowUpQueueView: React.FC<FollowUpQueueViewProps> = ({
                   <div className="text-right">
                     <div className="text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1 justify-end">
                       <Clock className="w-3.5 h-3.5" />
-                      <span>
-                        {dueDate.toLocaleDateString([], {
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </span>
+                      <span>{formatDate(dueDate)}</span>
                     </div>
                   </div>
                 </div>

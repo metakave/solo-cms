@@ -14,6 +14,7 @@ import {
   FileType,
 } from 'lucide-react';
 import { Attachment } from '@/types/crm';
+import { formatDate } from '@/lib/date';
 
 interface DocumentPreviewModalProps {
   attachment: Attachment | null;
@@ -265,12 +266,7 @@ export const DocumentPreviewModal: React.FC<DocumentPreviewModalProps> = ({
                 </span>
               </div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                {formatFileSize(attachment.fileSize)} • Attached{' '}
-                {new Date(attachment.createdAt).toLocaleDateString([], {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
+                {formatFileSize(attachment.fileSize)} • Attached {formatDate(attachment.createdAt)}
               </div>
             </div>
           </div>

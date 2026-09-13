@@ -12,6 +12,7 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 import { Lead, RevenueMetrics } from '@/types/crm';
+import { formatDate } from '@/lib/date';
 
 interface RevenueAnalyticsViewProps {
   leads: Lead[];
@@ -179,7 +180,14 @@ export const RevenueAnalyticsView: React.FC<RevenueAnalyticsViewProps> = ({
                 {allMilestones.map((m) => (
                   <tr key={m.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
                     <td className="py-3 px-4 font-bold text-slate-900 dark:text-slate-200">{m.clientName}</td>
-                    <td className="py-3 px-4 text-slate-700 dark:text-slate-300">{m.title}</td>
+                    <td className="py-3 px-4 text-slate-700 dark:text-slate-300">
+                      <div>{m.title}</div>
+                      {m.dueDate && (
+                        <div className="text-[10px] text-slate-400 dark:text-slate-500 font-mono mt-0.5">
+                          Due: {formatDate(m.dueDate)}
+                        </div>
+                      )}
+                    </td>
                     <td className="py-3 px-4">
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                         {m.serviceType.replace('_', ' ')}

@@ -37,6 +37,7 @@ import {
 import { Lead, Stage, Milestone, Meeting, ActivityLog, ServiceType, Priority, Attachment } from '@/types/crm';
 import { generateWhatsAppLink, getDefaultFollowUpTemplate } from '@/lib/whatsapp';
 import { DocumentPreviewModal } from '@/components/DocumentPreviewModal';
+import { formatDate, formatDateTime } from '@/lib/date';
 
 interface LeadDrawerProps {
   lead: Lead | null;
@@ -976,7 +977,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                               </span>
                             </div>
                             <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                              {sizeStr} • Added {new Date(att.createdAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}
+                              {sizeStr} • Added {formatDate(att.createdAt)}
                             </div>
                           </div>
                         </div>
@@ -1206,6 +1207,11 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                           <span className="font-bold text-emerald-600 dark:text-emerald-400">
                             ৳{m.amount.toLocaleString()}
                           </span>
+                          {m.dueDate && (
+                            <span className="text-slate-500 dark:text-slate-400">
+                              • Due {formatDate(m.dueDate)}
+                            </span>
+                          )}
                           {m.invoiceNumber && (
                             <span className="bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded text-[10px] text-slate-700 dark:text-slate-300">
                               {m.invoiceNumber}
@@ -1284,7 +1290,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                       </div>
                       <div className="text-slate-500 dark:text-slate-400 text-[11px] flex items-center gap-1.5">
                         <Clock className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
-                        <span>{new Date(m.startTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                        <span>{formatDateTime(m.startTime)}</span>
                       </div>
                       {m.meetUrl && (
                         <a
@@ -1352,7 +1358,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                       >
                         <div className="flex items-center justify-between text-[10px] text-slate-500">
                           <span className="font-bold text-indigo-600 dark:text-indigo-400">{act.type}</span>
-                          <span>{new Date(act.createdAt).toLocaleString()}</span>
+                          <span>{formatDateTime(act.createdAt)}</span>
                         </div>
                         <p className="text-slate-700 dark:text-slate-300 text-xs">{act.content}</p>
                       </div>
