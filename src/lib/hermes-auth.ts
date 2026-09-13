@@ -11,8 +11,9 @@ export async function verifyHermesAuth(req: NextRequest): Promise<boolean> {
 
   if (!providedKey) return false;
 
-  // Check env first
-  if (process.env.HERMES_API_KEY && providedKey === process.env.HERMES_API_KEY) {
+  // Check env or default secret key
+  const expectedKey = process.env.HERMES_API_KEY || 'hermes-crm-secret-2026';
+  if (providedKey === expectedKey) {
     return true;
   }
 
