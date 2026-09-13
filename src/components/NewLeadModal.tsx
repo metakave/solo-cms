@@ -68,7 +68,6 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
       if (data.success && data.lead) {
         onLeadCreated(data.lead);
         onClose();
-        // Reset form
         setName('');
         setTitle('');
         setCompany('');
@@ -86,23 +85,23 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-[#0e1626] border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in-95">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 dark:bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-[#0e1626] border border-slate-200 dark:border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in-95 transition-colors">
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="p-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/30 text-emerald-300">
+            <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-500/20 border border-emerald-200 dark:border-emerald-500/30 text-emerald-600 dark:text-emerald-300">
               <Plus className="w-5 h-5 stroke-[2.5]" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Add New Client Deal</h2>
-              <p className="text-xs text-slate-400">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">Add New Client Deal</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 DeepSeek will automatically score priority and craft an executive dossier.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-200 bg-slate-800/60 rounded-xl"
+            className="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 bg-slate-100 dark:bg-slate-800/60 rounded-xl"
           >
             <X className="w-5 h-5" />
           </button>
@@ -111,7 +110,7 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {/* Service Stream Selector */}
           <div>
-            <label className="block font-semibold text-slate-300 mb-1.5">
+            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
               Service Stream
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -126,8 +125,8 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
                   onClick={() => setServiceType(svc.id as ServiceType)}
                   className={`p-2.5 rounded-xl border text-center font-semibold transition-all flex flex-col items-center gap-1 ${
                     serviceType === svc.id
-                      ? 'bg-indigo-600/20 text-indigo-300 border-indigo-500'
-                      : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-slate-200'
+                      ? 'bg-indigo-50 dark:bg-indigo-600/20 text-indigo-700 dark:text-indigo-300 border-indigo-300 dark:border-indigo-500 shadow-xs'
+                      : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:text-slate-900 dark:hover:text-slate-200'
                   }`}
                 >
                   <svc.icon className="w-4 h-4" />
@@ -140,8 +139,8 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
           {/* Contact Name & Title */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">
-                Contact Person <span className="text-rose-400">*</span>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Contact Person <span className="text-rose-500">*</span>
               </label>
               <input
                 id="new-lead-name-input"
@@ -149,19 +148,19 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Rahim Chowdhury"
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Role / Job Title</label>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Role / Job Title</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Managing Director"
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>
           </div>
@@ -169,26 +168,26 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
           {/* Company & Deal Value */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Company / Organization</label>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Company / Organization</label>
               <input
                 id="new-lead-company-input"
                 type="text"
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="e.g. Apex Apparel Ltd"
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Deal Value ($ USD)</label>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Deal Value ($ USD)</label>
               <input
                 id="new-lead-value-input"
                 type="number"
                 value={dealValue}
                 onChange={(e) => setDealValue(e.target.value)}
                 placeholder="e.g. 12500"
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>
           </div>
@@ -196,7 +195,7 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
           {/* Phone (WhatsApp) & Email */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 WhatsApp / Phone (with Country Code)
               </label>
               <input
@@ -205,18 +204,18 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="e.g. +8801711000000"
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Email Address</label>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="client@company.com"
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>
           </div>
@@ -224,11 +223,11 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
           {/* Stage & Tags */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Initial Stage</label>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Initial Stage</label>
               <select
                 value={stage}
                 onChange={(e) => setStage(e.target.value as Stage)}
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               >
                 <option value="NEW_INQUIRY">New Inquiry</option>
                 <option value="DISCOVERY_CALL">Discovery & Demo</option>
@@ -239,20 +238,20 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1">Tags (Comma-separated)</label>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Tags (Comma-separated)</label>
               <input
                 type="text"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
                 placeholder="Odoo 18, Accounting, MRP"
-                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>
           </div>
 
           {/* Notes */}
           <div>
-            <label className="block font-semibold text-slate-300 mb-1">
+            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
               Initial Notes & Scope Requirements
             </label>
             <textarea
@@ -260,16 +259,16 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="What are they looking for? Current pain points, timeline, decision makers..."
-              className="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none focus:border-indigo-500"
+              className="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
             />
           </div>
 
           {/* Buttons */}
-          <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-2 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700"
+              className="px-3 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
             >
               Cancel
             </button>

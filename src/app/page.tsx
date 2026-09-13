@@ -158,7 +158,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#090d16] text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white transition-colors duration-200">
       {/* Header */}
       <DashboardHeader
         selectedService={selectedService}
@@ -183,8 +183,8 @@ export default function Home() {
 
         {/* View Content */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-24 text-slate-500 space-y-3">
-            <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+          <div className="flex flex-col items-center justify-center py-24 text-slate-400 dark:text-slate-500 space-y-3">
+            <Loader2 className="w-8 h-8 animate-spin text-indigo-600 dark:text-indigo-500" />
             <p className="text-xs font-medium">Loading SoloCRM workspace...</p>
           </div>
         ) : (
