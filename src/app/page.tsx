@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { RevenueBanner } from '@/components/RevenueBanner';
 import { PipelineKanban } from '@/components/PipelineKanban';
+import { LeadListView } from '@/components/LeadListView';
 import { LeadDrawer } from '@/components/LeadDrawer';
 import { MeetingPlannerView } from '@/components/MeetingPlannerView';
 import { FollowUpQueueView } from '@/components/FollowUpQueueView';
@@ -26,7 +27,7 @@ export default function Home() {
 
   // Filter & View states
   const [selectedService, setSelectedService] = useState<string>('ALL');
-  const [activeView, setActiveView] = useState<'KANBAN' | 'FOLLOWUPS' | 'CALENDAR' | 'REVENUE'>('KANBAN');
+  const [activeView, setActiveView] = useState<'KANBAN' | 'LIST' | 'FOLLOWUPS' | 'CALENDAR' | 'REVENUE'>('KANBAN');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Selected Lead for Drawer
@@ -229,6 +230,18 @@ export default function Home() {
                 onEditLead={handleOpenEditLead}
                 onUpdateStage={handleUpdateStage}
                 onOpenWhatsApp={handleOpenWhatsApp}
+                onSwitchToList={() => setActiveView('LIST')}
+              />
+            )}
+
+            {activeView === 'LIST' && (
+              <LeadListView
+                leads={filteredLeads}
+                onSelectLead={setSelectedLead}
+                onEditLead={handleOpenEditLead}
+                onUpdateStage={handleUpdateStage}
+                onOpenWhatsApp={handleOpenWhatsApp}
+                onSwitchToKanban={() => setActiveView('KANBAN')}
               />
             )}
 

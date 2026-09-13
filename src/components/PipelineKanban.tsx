@@ -20,6 +20,8 @@ import {
   Eye,
   SlidersHorizontal,
   Paperclip,
+  LayoutGrid,
+  ListFilter,
 } from 'lucide-react';
 import { Lead, Stage, Priority, ServiceType } from '@/types/crm';
 import { generateWhatsAppLink, getDefaultFollowUpTemplate } from '@/lib/whatsapp';
@@ -31,6 +33,7 @@ interface PipelineKanbanProps {
   onEditLead?: (lead: Lead) => void;
   onUpdateStage: (leadId: string, newStage: Stage) => void;
   onOpenWhatsApp: (lead: Lead) => void;
+  onSwitchToList?: () => void;
 }
 
 export const STAGES: { id: Stage; title: string; color: string; badgeColor: string }[] = [
@@ -78,6 +81,7 @@ export const PipelineKanban: React.FC<PipelineKanbanProps> = ({
   onEditLead,
   onUpdateStage,
   onOpenWhatsApp,
+  onSwitchToList,
 }) => {
   // Folded stages dictionary: { [stageId]: true/false }
   const [foldedStages, setFoldedStages] = useState<Record<string, boolean>>({});
@@ -189,18 +193,41 @@ export const PipelineKanban: React.FC<PipelineKanbanProps> = ({
   return (
     <div className="space-y-3">
       {/* Kanban Stage View Controls Toolbar */}
-      <div className="flex items-center justify-between text-xs px-1 text-slate-500 dark:text-slate-400">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-slate-700 dark:text-slate-300">Stages View:</span>
-          {foldedCount > 0 ? (
-            <span className="px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium text-[11px] border border-indigo-200 dark:border-indigo-500/20">
-              {foldedCount} folded of {STAGES.length}
-            </span>
-          ) : (
-            <span className="text-[11px] text-slate-400 dark:text-slate-500">
-              All {STAGES.length} stages expanded
-            </span>
-          )}
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs px-1 text-slate-500 dark:text-slate-400">
+        <div className="flex items-center gap-3">
+          {/* Quick View Toggle Pill */}
+          <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl border border-slate-200 dark:border-slate-700/60 text-xs">
+            <button
+              type="button"
+              className="flex items-center gap-1.5 px-3 py-1 rounded-lg font-bold bg-indigo-600 text-white shadow-xs"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span>Kanban</span>
+            </button>
+            {onSwitchToList && (
+              <button
+                type="button"
+                onClick={onSwitchToList}
+                className="flex items-center gap-1.5 px-3 py-1 rounded-lg font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >
+                <ListFilter className="w-3.5 h-3.5" />
+                <span>List View</span>
+              </button>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-slate-700 dark:text-slate-300">Stages View:</span>
+            {foldedCount > 0 ? (
+              <span className="px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-medium text-[11px] border border-indigo-200 dark:border-indigo-500/20">
+                {foldedCount} folded of {STAGES.length}
+              </span>
+            ) : (
+              <span className="text-[11px] text-slate-400 dark:text-slate-500">
+                All {STAGES.length} stages expanded
+              </span>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-2">

@@ -14,6 +14,7 @@ import {
   Layers,
   BellRing,
   Lock,
+  ListFilter,
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useAuth } from '@/context/AuthContext';
@@ -21,8 +22,8 @@ import { useAuth } from '@/context/AuthContext';
 interface HeaderProps {
   selectedService: string;
   onSelectService: (service: string) => void;
-  activeView: 'KANBAN' | 'FOLLOWUPS' | 'CALENDAR' | 'REVENUE';
-  onSelectView: (view: 'KANBAN' | 'FOLLOWUPS' | 'CALENDAR' | 'REVENUE') => void;
+  activeView: 'KANBAN' | 'LIST' | 'FOLLOWUPS' | 'CALENDAR' | 'REVENUE';
+  onSelectView: (view: 'KANBAN' | 'LIST' | 'FOLLOWUPS' | 'CALENDAR' | 'REVENUE') => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
   onOpenNewLead: () => void;
@@ -141,6 +142,19 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           >
             <Layers className="w-3.5 h-3.5" />
             <span>Pipeline Kanban</span>
+          </button>
+
+          <button
+            id="view-list-tab"
+            onClick={() => onSelectView('LIST')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium transition-all ${
+              activeView === 'LIST'
+                ? 'bg-indigo-600 text-white shadow-sm'
+                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+            }`}
+          >
+            <ListFilter className="w-3.5 h-3.5" />
+            <span>List View</span>
           </button>
 
           <button
