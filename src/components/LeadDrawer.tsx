@@ -21,6 +21,7 @@ import {
   Layers,
   History,
   Trash2,
+  Pencil,
 } from 'lucide-react';
 import { Lead, Stage, Milestone, Meeting, ActivityLog } from '@/types/crm';
 import { generateWhatsAppLink, getDefaultFollowUpTemplate } from '@/lib/whatsapp';
@@ -31,6 +32,7 @@ interface LeadDrawerProps {
   onUpdateLead: (updatedLead: Lead) => void;
   onDeleteLead: (id: string) => void;
   onOpenScheduleMeeting: (lead: Lead) => void;
+  onEditLead?: (lead: Lead) => void;
 }
 
 export const LeadDrawer: React.FC<LeadDrawerProps> = ({
@@ -39,6 +41,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
   onUpdateLead,
   onDeleteLead,
   onOpenScheduleMeeting,
+  onEditLead,
 }) => {
   const [activeTab, setActiveTab] = useState<'AI' | 'WHATSAPP' | 'MILESTONES' | 'MEETINGS' | 'NOTES'>('AI');
   const [isAiLoading, setIsAiLoading] = useState(false);
@@ -236,6 +239,17 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
+              {onEditLead && (
+                <button
+                  id="edit-lead-drawer-btn"
+                  onClick={() => onEditLead(lead)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-600/20 dark:hover:bg-indigo-600/30 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/30 rounded-xl transition-all shadow-xs"
+                  title="Edit Lead Details"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span>Edit Lead</span>
+                </button>
+              )}
               <button
                 onClick={() => onDeleteLead(lead.id)}
                 className="p-2 text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-all"

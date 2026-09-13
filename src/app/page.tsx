@@ -9,6 +9,7 @@ import { MeetingPlannerView } from '@/components/MeetingPlannerView';
 import { FollowUpQueueView } from '@/components/FollowUpQueueView';
 import { RevenueAnalyticsView } from '@/components/RevenueAnalyticsView';
 import { NewLeadModal } from '@/components/NewLeadModal';
+import { EditLeadModal } from '@/components/EditLeadModal';
 import { ScheduleMeetingModal } from '@/components/ScheduleMeetingModal';
 import { HermesModal } from '@/components/HermesModal';
 import { SettingsModal } from '@/components/SettingsModal';
@@ -30,10 +31,17 @@ export default function Home() {
 
   // Modal States
   const [isNewLeadOpen, setIsNewLeadOpen] = useState(false);
+  const [isEditLeadOpen, setIsEditLeadOpen] = useState(false);
+  const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [scheduleDefaultLead, setScheduleDefaultLead] = useState<Lead | null>(null);
   const [isHermesOpen, setIsHermesOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const handleOpenEditLead = (lead: Lead) => {
+    setEditingLead(lead);
+    setIsEditLeadOpen(true);
+  };
 
   // Fetch all leads & revenue metrics
   const loadData = async () => {
@@ -193,6 +201,7 @@ export default function Home() {
               <PipelineKanban
                 leads={filteredLeads}
                 onSelectLead={setSelectedLead}
+                onEditLead={handleOpenEditLead}
                 onUpdateStage={handleUpdateStage}
                 onOpenWhatsApp={handleOpenWhatsApp}
               />
@@ -234,6 +243,7 @@ export default function Home() {
         onClose={() => setSelectedLead(null)}
         onUpdateLead={handleUpdateLead}
         onDeleteLead={handleDeleteLead}
+        onEditLead={handleOpenEditLead}
         onOpenScheduleMeeting={(lead) => {
           setScheduleDefaultLead(lead);
           setIsScheduleOpen(true);
@@ -241,6 +251,16 @@ export default function Home() {
       />
 
       {/* Modals */}
+      <EditLeadModal
+        isOpen={isEditLeadOpen}
+        lead={editingLead}
+        onClose={() => {
+          setIsEditLeadOpen(false);
+          setEditingLead(null);
+        }}
+        onLeadUpdated={handleUpdateLead}
+      />
+
       <NewLeadModal
         isOpen={isNewLeadOpen}
         onClose={() => setIsNewLeadOpen(false)}
