@@ -46,9 +46,11 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Brand & Tagline */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-emerald-400 flex items-center justify-center shadow-md shadow-indigo-500/20 text-white font-bold text-lg">
-            S
-          </div>
+          <img
+            src="/crm.png"
+            alt="SoloCRM Logo"
+            className="w-10 h-10 rounded-xl object-contain shadow-sm border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900/80 p-0.5"
+          />
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">

@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   title: "SoloCRM — Lightweight AI CRM for Solopreneurs & Odoo Consultants",
   description:
     "Lightweight, ultra-responsive CRM tailored for Solopreneurs, Odoo Consultants, and Corporate Trainers. Features DeepSeek AI intelligence, 1-click WhatsApp wa.me messaging, Zoho Calendar sync, and Hermes Agent integration.",
+  icons: {
+    icon: [
+      { url: "/crm.png", href: "/crm.png" },
+    ],
+    shortcut: "/crm.png",
+    apple: "/crm.png",
+  },
 };
 
 export default function RootLayout({
