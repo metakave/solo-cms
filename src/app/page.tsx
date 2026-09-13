@@ -259,6 +259,7 @@ export default function Home() {
           setEditingLead(null);
         }}
         onLeadUpdated={handleUpdateLead}
+        onDeleteLead={handleDeleteLead}
       />
 
       <NewLeadModal
