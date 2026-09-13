@@ -3,27 +3,46 @@ import { prisma } from './prisma';
 
 export async function verifyHermesAuth(req: NextRequest): Promise<boolean> {
   const authHeader = req.headers.get('authorization');
-  const hermesKeyHeader = req.headers.get('x-hermes-key');
+  const hermesKeyHeader =
+    req.headers.get('x-hermes-key') ||
+    req.headers.get('x-api-key') ||
+    req.headers.get('apikey');
 
-  const providedKey =
+  const rawKey =
     hermesKeyHeader ||
-    (authHeader?.startsWith('Bearer ') ? authHeader.substring(7).trim() : null);
+    (authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : authHeader) ||
+    null;
 
-  if (!providedKey) return false;
+  if (!rawKey) return false;
 
-  // Check env or default secret key
-  const expectedKey = process.env.HERMES_API_KEY || 'hermes-crm-secret-2026';
-  if (providedKey === expectedKey) {
+  const providedKey = rawKey.trim().replace(/^["']|["']$/g, '');
+  const defaultKey = 'hermes-crm-secret-2026';
+
+  // 1. Check default key (always accepted)
+  if (providedKey === defaultKey) {
     return true;
   }
 
-  // Check database settings
+  // 2. Check environment variable (cleaned of quotes/whitespace)
+  const envKey = process.env.HERMES_API_KEY?.trim().replace(/^["']|["']$/g, '');
+  if (envKey && providedKey === envKey) {
+    return true;
+  }
+
+  // 3. Check database settings
   try {
     const setting = await prisma.setting.findUnique({
       where: { key: 'HERMES_API_KEY' },
     });
-    return setting ? setting.value === providedKey : false;
+    if (setting) {
+      const dbKey = setting.value.trim().replace(/^["']|["']$/g, '');
+      if (providedKey === dbKey) {
+        return true;
+      }
+    }
   } catch {
-    return false;
+    // ignore
   }
+
+  return false;
 }
