@@ -22,6 +22,10 @@
   --text-muted: #64748b;
 }
 
+html {
+  font-size: 18px; /* Scaled up by 2 points (from 16px to 18px) */
+}
+
 body {
   background-color: var(--bg-app);
   color: var(--text-primary);
