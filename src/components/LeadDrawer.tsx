@@ -350,7 +350,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
             <div>
               <div className="text-slate-500 dark:text-slate-400 font-medium">Deal Value</div>
               <div className="text-base font-extrabold text-emerald-600 dark:text-emerald-400">
-                ${lead.dealValue.toLocaleString()}
+                ৳{lead.dealValue.toLocaleString()}
               </div>
             </div>
             <div>
@@ -519,13 +519,13 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Deal Value ($ USD)</label>
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Deal Value (BDT)</label>
                   <input
                     id="drawer-edit-value-input"
                     type="number"
                     value={editDealValue}
                     onChange={(e) => setEditDealValue(e.target.value)}
-                    placeholder="e.g. 15000"
+                    placeholder="e.g. 150000"
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-semibold text-emerald-600 dark:text-emerald-400"
                   />
                 </div>
@@ -894,10 +894,10 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-600 dark:text-slate-400 mb-1 font-medium">Amount ($ USD)</label>
+                    <label className="block text-slate-600 dark:text-slate-400 mb-1 font-medium">Amount (BDT)</label>
                     <input
                       type="number"
-                      placeholder="e.g., 4000"
+                      placeholder="e.g., 50000"
                       value={newMilestoneAmount}
                       onChange={(e) => setNewMilestoneAmount(e.target.value)}
                       className="w-full px-3 py-1.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-200"
@@ -926,7 +926,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
               <div className="space-y-2">
                 {(!lead.milestones || lead.milestones.length === 0) ? (
                   <div className="border border-dashed border-slate-300 dark:border-slate-800 rounded-xl p-6 text-center text-xs text-slate-400 dark:text-slate-500 italic">
-                    No milestones defined yet. Break down the ${lead.dealValue.toLocaleString()} deal into staged invoices.
+                    No milestones defined yet. Break down the ৳{lead.dealValue.toLocaleString()} deal into staged invoices.
                   </div>
                 ) : (
                   lead.milestones.map((m) => (
@@ -938,7 +938,7 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                         <div className="font-semibold text-slate-900 dark:text-slate-200">{m.title}</div>
                         <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2">
                           <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                            ${m.amount.toLocaleString()}
+                            ৳{m.amount.toLocaleString()}
                           </span>
                           {m.invoiceNumber && (
                             <span className="bg-slate-200 dark:bg-slate-800 px-1.5 py-0.5 rounded text-[10px] text-slate-700 dark:text-slate-300">

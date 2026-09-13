@@ -17,7 +17,7 @@ model Lead {
   serviceType      String        @default("ODOO_CONSULTING") // ODOO_CONSULTING, TRAINING, ADVISORY
   stage            String        @default("NEW_INQUIRY") // NEW_INQUIRY, DISCOVERY_CALL, PROPOSAL_SENT, NEGOTIATION, WON_ACTIVE, COMPLETED, LOST
   dealValue        Float         @default(0.0)
-  currency         String        @default("USD")
+  currency         String        @default("BDT")
   probability      Int           @default(30)
   priority         String        @default("MEDIUM") // HIGH, MEDIUM, LOW
   aiScore          Int?
@@ -60,7 +60,7 @@ model Milestone {
   lead          Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
   title         String
   amount        Float     @default(0.0)
-  currency      String    @default("USD")
+  currency      String    @default("BDT")
   status        String    @default("PENDING") // PENDING, INVOICED, PAID
   dueDate       DateTime?
   paidDate      DateTime?

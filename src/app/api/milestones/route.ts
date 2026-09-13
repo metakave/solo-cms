@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       data: {
         leadId,
         type: 'NOTE',
-        content: `Milestone created: "${title}" ($${Number(amount).toLocaleString()}) - Status: ${status}`,
+        content: `Milestone created: "${title}" (৳${Number(amount).toLocaleString()}) - Status: ${status}`,
       },
     });
 

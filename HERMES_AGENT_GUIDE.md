@@ -28,7 +28,7 @@ You have access to SoloCRM via REST API (Header: "x-hermes-key: hermes-crm-secre
        "phone": "<Phone/WhatsApp with country code if provided>",
        "email": "<Email if provided>",
        "serviceType": "ODOO_CONSULTING" | "TRAINING" | "ADVISORY",
-       "dealValue": <Estimated USD number, default 0>,
+       "dealValue": <Estimated BDT number, default 0>,
        "notes": "<Summary of requirements, modules, pain points>"
      }
    - Confirm to the user that the lead was created and report the AI priority score returned by the CRM.
@@ -73,7 +73,7 @@ If your Hermes model supports function calling (e.g. Nous Hermes 2/3 Tool Use), 
             "enum": ["ODOO_CONSULTING", "TRAINING", "ADVISORY"],
             "description": "Service stream"
           },
-          "dealValue": { "type": "number", "description": "Estimated deal value in USD" },
+          "dealValue": { "type": "number", "description": "Estimated deal value in BDT" },
           "notes": { "type": "string", "description": "Inquiry scope, requirements, or pain points" }
         },
         "required": ["name"]

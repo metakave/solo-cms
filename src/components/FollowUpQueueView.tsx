@@ -129,7 +129,7 @@ export const FollowUpQueueView: React.FC<FollowUpQueueViewProps> = ({
                       {lead.company || lead.name}
                     </h3>
                     <div className="text-xs text-slate-500 dark:text-slate-400">
-                      Contact: {lead.name} • ${lead.dealValue.toLocaleString()} ({lead.stage.replace('_', ' ')})
+                      Contact: {lead.name} • ৳{lead.dealValue.toLocaleString()} ({lead.stage.replace('_', ' ')})
                     </div>
                   </div>
 

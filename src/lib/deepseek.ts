@@ -65,7 +65,7 @@ Evaluate the lead and output strict JSON with fields:
 Name: ${lead.name}
 Company: ${lead.company || 'N/A'}
 Service: ${lead.serviceType}
-Deal Value: $${lead.dealValue}
+Deal Value: ৳${lead.dealValue} BDT
 Stage: ${lead.stage}
 Notes: ${lead.notes || 'None'}
 Tags: ${lead.tags || 'None'}`,
@@ -92,8 +92,8 @@ Tags: ${lead.tags || 'None'}`,
 
   // Intelligent heuristic fallback for instant offline/keyless use
   let baseScore = 50;
-  if (lead.dealValue >= 10000) baseScore += 25;
-  else if (lead.dealValue >= 4000) baseScore += 18;
+  if (lead.dealValue >= 100000 || lead.dealValue >= 10000) baseScore += 25;
+  else if (lead.dealValue >= 30000 || lead.dealValue >= 4000) baseScore += 18;
   else if (lead.dealValue > 0) baseScore += 10;
 
   if (['NEGOTIATION', 'PROPOSAL_SENT', 'WON_ACTIVE'].includes(lead.stage)) baseScore += 15;
@@ -106,14 +106,14 @@ Tags: ${lead.tags || 'None'}`,
   return {
     score: finalScore,
     priority,
-    reasoning: `Calculated based on deal magnitude ($${lead.dealValue}), active pipeline stage (${lead.stage}), and service alignment with ${lead.serviceType}. High likelihood of revenue realization with timely follow-up.`,
+    reasoning: `Calculated based on deal magnitude (৳${lead.dealValue.toLocaleString()} BDT), active pipeline stage (${lead.stage}), and service alignment with ${lead.serviceType}. High likelihood of revenue realization with timely follow-up.`,
     suggestedAction:
       priority === 'HIGH'
         ? 'Send direct WhatsApp message regarding milestone dates and schedule a 15-minute agreement sync.'
         : 'Share syllabus/case study brochure and schedule a discovery demo.',
     dossierMarkdown: `### Executive Dossier: ${lead.name} (${lead.company || 'Direct Client'})
 - **Service Stream**: ${lead.serviceType.replace('_', ' ')}
-- **Pipeline Value**: $${lead.dealValue.toLocaleString()}
+- **Pipeline Value**: ৳${lead.dealValue.toLocaleString()}
 - **Strategic Fit**: Strong opportunity for solopreneur margin. Core focus on custom module requirements and delivery milestones.
 - **Action Plan**: Target next touchpoint within 48 hours to preserve deal momentum.`,
   };

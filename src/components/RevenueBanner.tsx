@@ -28,7 +28,7 @@ export const RevenueBanner: React.FC<RevenueBannerProps> = ({ metrics, onViewRev
               <Target className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <div className="text-xl font-extrabold text-slate-900 dark:text-white">
-              ${metrics.totalPipelineValue.toLocaleString()}
+              ৳{metrics.totalPipelineValue.toLocaleString()}
             </div>
             <div className="text-[11px] text-indigo-600 dark:text-indigo-300 mt-0.5 font-medium">
               {metrics.activeDealsCount} active client deals
@@ -42,7 +42,7 @@ export const RevenueBanner: React.FC<RevenueBannerProps> = ({ metrics, onViewRev
               <ArrowUpRight className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div className="text-xl font-extrabold text-cyan-700 dark:text-cyan-300">
-              ${metrics.expectedWeightedRevenue.toLocaleString()}
+              ৳{metrics.expectedWeightedRevenue.toLocaleString()}
             </div>
             <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Probability weighted</div>
           </div>
@@ -54,7 +54,7 @@ export const RevenueBanner: React.FC<RevenueBannerProps> = ({ metrics, onViewRev
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div className="text-xl font-extrabold text-emerald-700 dark:text-emerald-400">
-              ${metrics.totalCollected.toLocaleString()}
+              ৳{metrics.totalCollected.toLocaleString()}
             </div>
             <div className="text-[11px] text-emerald-600 dark:text-emerald-300/80 mt-0.5 font-medium">
               Milestones cleared & paid
@@ -68,7 +68,7 @@ export const RevenueBanner: React.FC<RevenueBannerProps> = ({ metrics, onViewRev
               <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
             </div>
             <div className="text-xl font-extrabold text-amber-700 dark:text-amber-400">
-              ${metrics.totalInvoicedPending.toLocaleString()}
+              ৳{metrics.totalInvoicedPending.toLocaleString()}
             </div>
             <div className="text-[11px] text-amber-600 dark:text-amber-300/80 mt-0.5 font-medium">
               Awaiting client payment
@@ -88,12 +88,12 @@ export const RevenueBanner: React.FC<RevenueBannerProps> = ({ metrics, onViewRev
               <div
                 style={{ width: `${Math.min(100, collectedPct)}%` }}
                 className="h-full bg-emerald-500 rounded-l-full"
-                title={`Collected: $${metrics.totalCollected}`}
+                title={`Collected: ৳${metrics.totalCollected}`}
               />
               <div
                 style={{ width: `${Math.min(100 - collectedPct, invoicedPct)}%` }}
                 className="h-full bg-amber-500"
-                title={`Invoiced: $${metrics.totalInvoicedPending}`}
+                title={`Invoiced: ৳${metrics.totalInvoicedPending}`}
               />
             </div>
           </div>

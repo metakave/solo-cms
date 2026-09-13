@@ -180,13 +180,13 @@ export const NewLeadModal: React.FC<NewLeadModalProps> = ({
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Deal Value ($ USD)</label>
+              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">Deal Value (BDT)</label>
               <input
                 id="new-lead-value-input"
                 type="number"
                 value={dealValue}
                 onChange={(e) => setDealValue(e.target.value)}
-                placeholder="e.g. 12500"
+                placeholder="e.g. 150000"
                 className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
               />
             </div>

@@ -72,13 +72,13 @@ export const RevenueAnalyticsView: React.FC<RevenueAnalyticsViewProps> = ({
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-slate-400">Pipeline Value:</span>
               <span className="font-extrabold text-slate-900 dark:text-white">
-                ${metrics.serviceBreakdown.ODOO_CONSULTING.totalValue.toLocaleString()}
+                ৳{metrics.serviceBreakdown.ODOO_CONSULTING.totalValue.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-slate-400">Realized Cash:</span>
               <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
-                ${metrics.serviceBreakdown.ODOO_CONSULTING.collected.toLocaleString()}
+                ৳{metrics.serviceBreakdown.ODOO_CONSULTING.collected.toLocaleString()}
               </span>
             </div>
           </div>
@@ -105,13 +105,13 @@ export const RevenueAnalyticsView: React.FC<RevenueAnalyticsViewProps> = ({
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-slate-400">Pipeline Value:</span>
               <span className="font-extrabold text-slate-900 dark:text-white">
-                ${metrics.serviceBreakdown.TRAINING.totalValue.toLocaleString()}
+                ৳{metrics.serviceBreakdown.TRAINING.totalValue.toLocaleString()}
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-slate-400">Realized Cash:</span>
               <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
-                ${metrics.serviceBreakdown.TRAINING.collected.toLocaleString()}
+                ৳{metrics.serviceBreakdown.TRAINING.collected.toLocaleString()}
               </span>
             </div>
           </div>
@@ -138,13 +138,13 @@ export const RevenueAnalyticsView: React.FC<RevenueAnalyticsViewProps> = ({
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-slate-400">Monthly Run-rate:</span>
               <span className="font-extrabold text-slate-900 dark:text-white">
-                ${metrics.serviceBreakdown.ADVISORY.totalValue.toLocaleString()}/mo
+                ৳{metrics.serviceBreakdown.ADVISORY.totalValue.toLocaleString()}/mo
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-500 dark:text-slate-400">Realized Cash:</span>
               <span className="font-extrabold text-emerald-600 dark:text-emerald-400">
-                ${metrics.serviceBreakdown.ADVISORY.collected.toLocaleString()}
+                ৳{metrics.serviceBreakdown.ADVISORY.collected.toLocaleString()}
               </span>
             </div>
           </div>
@@ -186,7 +186,7 @@ export const RevenueAnalyticsView: React.FC<RevenueAnalyticsViewProps> = ({
                       </span>
                     </td>
                     <td className="py-3 px-4 font-extrabold text-emerald-600 dark:text-emerald-400">
-                      ${m.amount.toLocaleString()}
+                      ৳{m.amount.toLocaleString()}
                     </td>
                     <td className="py-3 px-4">
                       <span

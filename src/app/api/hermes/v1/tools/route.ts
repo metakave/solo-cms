@@ -20,7 +20,7 @@ export async function GET() {
               enum: ['ODOO_CONSULTING', 'TRAINING', 'ADVISORY'],
               description: 'The type of service stream',
             },
-            dealValue: { type: 'number', description: 'Estimated total deal value in USD' },
+            dealValue: { type: 'number', description: 'Estimated total deal value in BDT (৳)' },
             notes: { type: 'string', description: 'Initial inquiry details or scope notes' },
           },
           required: ['name'],

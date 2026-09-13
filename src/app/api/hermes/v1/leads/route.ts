@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       serviceType = 'ODOO_CONSULTING',
       stage = 'NEW_INQUIRY',
       dealValue = 0,
-      currency = 'USD',
+      currency = 'BDT',
       notes,
       tags,
     } = body;

@@ -269,7 +269,7 @@ export const PipelineKanban: React.FC<PipelineKanbanProps> = ({
 
                 {/* Abbreviated Revenue Value */}
                 <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 mb-4 whitespace-nowrap">
-                  {stageValue >= 1000 ? `$${(stageValue / 1000).toFixed(0)}k` : `$${stageValue}`}
+                  {stageValue >= 1000 ? `৳${(stageValue / 1000).toFixed(0)}k` : `৳${stageValue}`}
                 </span>
 
                 {/* Rotated Vertical Title */}
@@ -311,7 +311,7 @@ export const PipelineKanban: React.FC<PipelineKanbanProps> = ({
                   </span>
                 </div>
                 <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5 pl-4">
-                  ${stageValue.toLocaleString()} total
+                  ৳{stageValue.toLocaleString()} total
                 </div>
               </div>
 
@@ -365,7 +365,7 @@ export const PipelineKanban: React.FC<PipelineKanbanProps> = ({
                       {/* Value & Probability */}
                       <div className="flex items-center justify-between text-xs mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-700/50">
                         <div className="font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
-                          ${lead.dealValue.toLocaleString()}
+                          ৳{lead.dealValue.toLocaleString()}
                         </div>
                         <div className="text-slate-500 dark:text-slate-400 font-medium text-[11px]">
                           {lead.probability}% prob
