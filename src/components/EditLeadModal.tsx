@@ -202,19 +202,19 @@ export const EditLeadModal: React.FC<EditLeadModalProps> = ({
             </div>
           </div>
 
-          {/* Contact Person & Job Title */}
+          {/* Lead Name & Job Title */}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                Contact Person <span className="text-rose-500">*</span>
+                Lead Name <span className="text-rose-500">*</span>
               </label>
               <input
                 id="edit-lead-name-input"
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Rahim Chowdhury"
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                placeholder="e.g. Rahim Chowdhury or Apex Implementation"
+                className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-semibold"
                 required
               />
             </div>

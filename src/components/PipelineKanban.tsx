@@ -354,15 +354,19 @@ export const PipelineKanban: React.FC<PipelineKanbanProps> = ({
                         )}
                       </div>
 
-                      {/* Company & Contact */}
-                      <div className="font-bold text-sm text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors line-clamp-1">
-                        {lead.company || lead.name}
-                      </div>
-                      {lead.company && (
-                        <div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-medium">
-                          {lead.name} {lead.title ? `• ${lead.title}` : ''}
+                      {/* Lead Name (Prominent & Largest) & Company */}
+                      <div>
+                        <div className="font-extrabold text-sm text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors line-clamp-1">
+                          {lead.name}
                         </div>
-                      )}
+                        {(lead.company || lead.title) && (
+                          <div className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-medium flex items-center gap-1.5">
+                            {lead.company && <span className="text-slate-700 dark:text-slate-300 font-semibold">{lead.company}</span>}
+                            {lead.company && lead.title && <span>•</span>}
+                            {lead.title && <span>{lead.title}</span>}
+                          </div>
+                        )}
+                      </div>
 
                       {/* Value & Probability */}
                       <div className="flex items-center justify-between text-xs mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-700/50">

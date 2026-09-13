@@ -127,10 +127,11 @@ export const FollowUpQueueView: React.FC<FollowUpQueueViewProps> = ({
                       onClick={() => onSelectLead(lead)}
                       className="text-base font-bold text-slate-900 dark:text-slate-100 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer transition-colors"
                     >
-                      {lead.company || lead.name}
+                      {lead.name}
                     </h3>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">
-                      Contact: {lead.name} • ৳{lead.dealValue.toLocaleString()} ({lead.stage.replace('_', ' ')})
+                    <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      {lead.company && <span className="font-semibold text-slate-700 dark:text-slate-300">{lead.company} • </span>}
+                      <span>৳{lead.dealValue.toLocaleString()} ({lead.stage.replace('_', ' ')})</span>
                     </div>
                   </div>
 

@@ -417,11 +417,14 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                   {lead.priority} PRIORITY ({lead.aiScore || 0}/100)
                 </span>
               </div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{lead.company || lead.name}</h2>
-              <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2">
-                <span>{lead.name}</span>
-                {lead.title && <span>• {lead.title}</span>}
-              </div>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">{lead.name}</h2>
+              {(lead.company || lead.title) && (
+                <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-1.5 font-medium">
+                  {lead.company && <span className="font-semibold text-slate-700 dark:text-slate-300">{lead.company}</span>}
+                  {lead.company && lead.title && <span>•</span>}
+                  {lead.title && <span>{lead.title}</span>}
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-2">
@@ -598,19 +601,19 @@ export const LeadDrawer: React.FC<LeadDrawerProps> = ({
                 </div>
               </div>
 
-              {/* Contact Person & Job Title */}
+              {/* Lead Name & Job Title */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Contact Person <span className="text-rose-500">*</span>
+                    Lead Name <span className="text-rose-500">*</span>
                   </label>
                   <input
                     id="drawer-edit-name-input"
                     type="text"
                     value={editName}
                     onChange={(e) => setEditName(e.target.value)}
-                    placeholder="Contact name"
-                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500"
+                    placeholder="e.g. Rahim Chowdhury or Apex Implementation"
+                    className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-200 focus:outline-none focus:border-indigo-500 font-semibold"
                     required
                   />
                 </div>
