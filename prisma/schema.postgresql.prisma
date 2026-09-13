@@ -1,0 +1,90 @@
+// Prisma Schema for Vercel Production with PostgreSQL (Neon / Supabase / Vercel Postgres)
+// To use on Vercel: copy this content to prisma/schema.prisma (or replace provider = "sqlite" with provider = "postgresql")
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Lead {
+  id               String        @id @default(cuid())
+  name             String
+  title            String?
+  company          String?
+  email            String?
+  phone            String?
+  serviceType      String        @default("ODOO_CONSULTING") // ODOO_CONSULTING, TRAINING, ADVISORY
+  stage            String        @default("NEW_INQUIRY") // NEW_INQUIRY, DISCOVERY_CALL, PROPOSAL_SENT, NEGOTIATION, WON_ACTIVE, COMPLETED, LOST
+  dealValue        Float         @default(0.0)
+  currency         String        @default("USD")
+  probability      Int           @default(30)
+  priority         String        @default("MEDIUM") // HIGH, MEDIUM, LOW
+  aiScore          Int?
+  aiPriorityReason String?
+  aiDossier        String?
+  notes            String?
+  tags             String?       // comma-separated tags
+  lastContactDate  DateTime?
+  nextFollowUpDate DateTime?
+  nextFollowUpGoal String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  meetings         Meeting[]
+  milestones       Milestone[]
+  activities       ActivityLog[]
+}
+
+model Meeting {
+  id           String    @id @default(cuid())
+  title        String
+  leadId       String?
+  lead         Lead?     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  startTime    DateTime
+  endTime      DateTime
+  locationType String    @default("ZOHO_MEETING")
+  meetUrl      String?
+  zohoEventId  String?
+  status       String    @default("SCHEDULED")
+  rawNotes     String?
+  aiSummary    String?
+  actionItems  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Milestone {
+  id            String    @id @default(cuid())
+  leadId        String
+  lead          Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  title         String
+  amount        Float     @default(0.0)
+  currency      String    @default("USD")
+  status        String    @default("PENDING") // PENDING, INVOICED, PAID
+  dueDate       DateTime?
+  paidDate      DateTime?
+  invoiceNumber String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  leadId    String
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  type      String
+  content   String
+  metadata  String?
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
