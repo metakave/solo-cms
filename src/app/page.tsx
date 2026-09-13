@@ -15,8 +15,11 @@ import { HermesModal } from '@/components/HermesModal';
 import { SettingsModal } from '@/components/SettingsModal';
 import { Lead, Stage, RevenueMetrics } from '@/types/crm';
 import { Loader2 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { PasscodeScreen } from '@/components/PasscodeScreen';
 
 export default function Home() {
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [metrics, setMetrics] = useState<RevenueMetrics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -69,8 +72,10 @@ export default function Home() {
   };
 
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isAuthenticated) {
+      loadData();
+    }
+  }, [isAuthenticated]);
 
   // Filter leads based on selected service stream and search query
   const filteredLeads = useMemo(() => {
@@ -164,6 +169,26 @@ export default function Home() {
   const handleOpenWhatsApp = (lead: Lead) => {
     setSelectedLead(lead);
   };
+
+  // Auth Loading State
+  if (isAuthLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-[#070b12] flex flex-col items-center justify-center space-y-4">
+        <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-2 shadow-lg flex items-center justify-center animate-pulse">
+          <img src="/crm.png" alt="SoloCRM" className="w-full h-full object-contain" />
+        </div>
+        <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+          <Loader2 className="w-4 h-4 animate-spin text-indigo-600 dark:text-indigo-400" />
+          <span>Verifying security session...</span>
+        </div>
+      </div>
+    );
+  }
+
+  // Passcode Lock Screen
+  if (!isAuthenticated) {
+    return <PasscodeScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white transition-colors duration-200">

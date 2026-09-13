@@ -13,8 +13,10 @@ import {
   TrendingUp,
   Layers,
   BellRing,
+  Lock,
 } from 'lucide-react';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { useAuth } from '@/context/AuthContext';
 
 interface HeaderProps {
   selectedService: string;
@@ -41,6 +43,7 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
   onOpenSettings,
   dueTodayCount,
 }) => {
+  const { logout } = useAuth();
   return (
     <header className="sticky top-0 z-30 bg-white/95 dark:bg-[#0c121e]/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800/80 px-6 py-3.5 transition-all shadow-sm">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -92,6 +95,15 @@ export const DashboardHeader: React.FC<HeaderProps> = ({
           >
             <Bot className="w-4 h-4 text-purple-600 dark:text-purple-400" />
             <span className="hidden sm:inline">Hermes Agent</span>
+          </button>
+
+          <button
+            id="lock-crm-btn"
+            onClick={logout}
+            className="p-2 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 bg-slate-100 dark:bg-slate-800/60 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-slate-200 dark:border-slate-700/60 hover:border-rose-300 dark:hover:border-rose-900/50 rounded-xl transition-all active:scale-95"
+            title="Lock CRM Workspace (Requires Passcode)"
+          >
+            <Lock className="w-4 h-4" />
           </button>
 
           <button
